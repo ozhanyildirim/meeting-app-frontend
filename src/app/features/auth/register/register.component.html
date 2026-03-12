@@ -1,0 +1,77 @@
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="logo">
+            <span class="logo-icon">◈</span>
+            <span>MeetSync</span>
+        </div>
+        <div class="auth-header">
+            <h2>Hesap oluştur</h2>
+            <p>Hemen başla, ücretsiz</p>
+        </div>
+
+        <div class="alert alert-error" *ngIf="error">
+            <span>{{ error }}</span>
+            <button class="alert-close" (click)="error = ''">✕</button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <!-- Profil Resmi -->
+            <div class="avatar-upload">
+                <div class="avatar-preview" *ngIf="profileImagePreview">
+                    <img [src]="profileImagePreview" alt="Profil resmi" />
+                    <button type="button" class="avatar-remove" (click)="removeProfileImage()">✕</button>
+                </div>
+                <label class="avatar-placeholder" *ngIf="!profileImagePreview">
+                    <input type="file" accept="image/jpg,image/jpeg,image/png" (change)="onProfileImageChange($event)" hidden />
+                    <span class="avatar-icon">👤</span>
+                    <span class="avatar-label">Fotoğraf ekle</span>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">Ad</label>
+                    <input id="firstName" type="text" formControlName="firstName" placeholder="John" />
+                    <span class="error-msg" *ngIf="firstName.touched && firstName.errors?.['required']">Ad gerekli</span>
+                    <span class="error-msg" *ngIf="firstName.touched && firstName.errors?.['minlength']">En az 2 karakter</span>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Soyad</label>
+                    <input id="lastName" type="text" formControlName="lastName" placeholder="Doe" />
+                    <span class="error-msg" *ngIf="lastName.touched && lastName.errors?.['required']">Soyad gerekli</span>
+                    <span class="error-msg" *ngIf="lastName.touched && lastName.errors?.['minlength']">En az 2 karakter</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-posta</label>
+                <input id="email" type="email" formControlName="email" placeholder="ornek@mail.com" />
+                <span class="error-msg" *ngIf="email.touched && email.errors?.['required']">E-posta gerekli</span>
+                <span class="error-msg" *ngIf="email.touched && email.errors?.['email']">Geçerli bir e-posta gir</span>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Telefon</label>
+                <input id="phone" type="tel" formControlName="phone" placeholder="05xxxxxxxxx" />
+                <span class="error-msg" *ngIf="phone.touched && phone.errors?.['required']">Telefon gerekli</span>
+                <span class="error-msg" *ngIf="phone.touched && phone.errors?.['pattern']">Geçerli bir telefon numarası gir</span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input id="password" type="password" formControlName="password" placeholder="••••••••" />
+                <span class="error-msg" *ngIf="password.touched && password.errors?.['required']">Şifre gerekli</span>
+                <span class="error-msg" *ngIf="password.touched && password.errors?.['minlength']">En az 6 karakter</span>
+            </div>
+
+            <button type="submit" class="btn-primary" [disabled]="loading">
+                {{ loading ? 'Hesap oluşturuluyor...' : 'Kayıt Ol' }}
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Zaten hesabın var mı? <a routerLink="/auth/login">Giriş yap</a>
+        </p>
+    </div>
+</div>

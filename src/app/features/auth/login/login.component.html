@@ -1,0 +1,39 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="logo">
+      <span class="logo-icon">◈</span>
+      <span>MeetSync</span>
+    </div>
+
+    <div class="auth-header">
+      <h2>Tekrar hoş geldin</h2>
+      <p>Hesabına giriş yap</p>
+    </div>
+
+    <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">E-posta</label>
+        <input id="email" type="email" formControlName="email" placeholder="ornek@mail.com" />
+        <span class="error-msg" *ngIf="email.touched && email.errors?.['required']">E-posta gerekli</span>
+        <span class="error-msg" *ngIf="email.touched && email.errors?.['email']">Geçerli bir e-posta gir</span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <input id="password" type="password" formControlName="password" placeholder="••••••••" />
+        <span class="error-msg" *ngIf="password.touched && password.errors?.['required']">Şifre gerekli</span>
+        <span class="error-msg" *ngIf="password.touched && password.errors?.['minlength']">En az 6 karakter</span>
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        {{ loading ? 'Giriş yapılıyor...' : 'Giriş Yap' }}
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Hesabın yok mu? <a routerLink="/auth/register">Kayıt ol</a>
+    </p>
+  </div>
+</div>

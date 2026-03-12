@@ -1,0 +1,73 @@
+<div class="layout">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo-icon">◈</span>
+      <span class="brand-name">MeetSync</span>
+    </div>
+    <div class="topbar-right">
+      <span class="user-name">{{ user?.fullName }}</span>
+      <button class="btn-ghost" (click)="logout()">Çıkış</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1>Toplantılar</h1>
+        <p class="subtitle">{{ meetings.length }} toplantı listeleniyor</p>
+      </div>
+      <a routerLink="/meetings/create" class="btn-new">
+        <span>+</span> Yeni Toplantı
+      </a>
+    </div>
+
+    <div class="alert alert-error" *ngIf="error" (click)="error = ''">{{ error }}</div>
+
+    <div class="loading" *ngIf="loading">
+      <div class="spinner"></div>
+      <span>Yükleniyor...</span>
+    </div>
+
+    <div class="empty" *ngIf="!loading && meetings.length === 0 && !error">
+      <div class="empty-icon">📅</div>
+      <h3>Henüz toplantı yok</h3>
+      <p>İlk toplantını oluşturarak başla</p>
+      <a routerLink="/meetings/create" class="btn-primary" style="width:auto; padding: 12px 24px;">Toplantı Oluştur</a>
+    </div>
+
+    <div class="meeting-grid" *ngIf="!loading && meetings.length > 0">
+      <div class="meeting-card" *ngFor="let meeting of meetings">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <h3 class="meeting-title">{{ meeting.title }}</h3>
+            <div class="card-actions">
+              <a [routerLink]="['/meetings', meeting.id, 'edit']" class="icon-btn edit-btn" title="Düzenle">✏️</a>
+              <button class="icon-btn delete-btn" (click)="confirmDelete(meeting.id)" title="Sil">🗑️</button>
+            </div>
+          </div>
+
+          <p class="meeting-desc" *ngIf="meeting.description">{{ meeting.description }}</p>
+
+          <div class="meeting-meta">
+            <div class="meta-item">
+              <span class="meta-icon">🕐</span>
+              <span>{{ formatDate(meeting.startDate) }}</span>
+            </div>
+          </div>
+
+          <a [routerLink]="['/meetings', meeting.id]" class="view-link">Detayları gör →</a>
+        </div>
+
+        <!-- Delete confirmation overlay -->
+        <div class="confirm-overlay" *ngIf="deleteConfirm === meeting.id">
+          <p>Bu toplantıyı silmek istiyor musun?</p>
+          <div class="confirm-actions">
+            <button class="btn-ghost" (click)="cancelDelete()">İptal</button>
+            <button class="btn-danger" (click)="deleteMeeting(meeting.id)">Sil</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

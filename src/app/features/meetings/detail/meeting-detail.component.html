@@ -1,0 +1,76 @@
+<div class="detail-page">
+    <div class="container">
+        <a routerLink="/meetings" class="back-link">← Tüm Toplantılar</a>
+        <div class="loading" *ngIf="loading">
+            <div class="spinner"></div> Yükleniyor...
+        </div>
+        <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+        <div class="detail-card" *ngIf="meeting && !loading">
+            <div class="card-stripe" [class.cancelled]="meeting.isCancelled"></div>
+            <div class="detail-header">
+                <div>
+                    <div class="title-row">
+                        <h1>{{ meeting.title }}</h1>
+                        <span class="badge-cancelled" *ngIf="meeting.isCancelled">İptal Edildi</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a [routerLink]="['/meetings', meeting.id, 'edit']" class="btn-ghost" *ngIf="!meeting.isCancelled">Düzenle</a>
+                    <button class="btn-cancel" (click)="showCancelConfirm = true" *ngIf="!meeting.isCancelled">İptal Et</button>
+                    <button class="btn-danger" (click)="showDeleteConfirm = true">Sil</button>
+                </div>
+            </div>
+            <p class="description" *ngIf="meeting.description">{{ meeting.description }}</p>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">📅 Başlangıç</span>
+                    <span class="info-value">{{ formatDate(meeting.startDate) }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">🏁 Bitiş</span>
+                    <span class="info-value">{{ formatDate(meeting.endDate) }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">⏱ Süre</span>
+                    <span class="info-value">{{ getDuration() }}</span>
+                </div>
+            </div>
+
+            <!-- DOCUMENT -->
+            <div class="document-section" *ngIf="meeting.document">
+                <span class="doc-section-label">📎 Ek Doküman</span>
+                <div class="doc-row">
+                    <span class="doc-icon">📄</span>
+                    <div class="doc-info">
+                        <span class="doc-name">{{ meeting.document.fileName }}</span>
+                        <span class="doc-meta">{{ meeting.document.fileType }} · {{ formatFileSize(meeting.document.fileSize) }}</span>
+                    </div>
+                    <button class="btn-download" (click)="downloadDocument()">⬇ İndir</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancel confirm modal -->
+        <div class="modal-overlay" *ngIf="showCancelConfirm" (click)="showCancelConfirm = false">
+            <div class="modal" (click)="$event.stopPropagation()">
+                <h3>Toplantıyı iptal et</h3>
+                <p>Bu toplantı iptal olarak işaretlenecek. Emin misin?</p>
+                <div class="modal-actions">
+                    <button class="btn-ghost" (click)="showCancelConfirm = false">Vazgeç</button>
+                    <button class="btn-cancel" (click)="cancelMeeting()">Evet, İptal Et</button>
+                </div>
+            </div>
+        </div>
+        <!-- Delete confirm modal -->
+        <div class="modal-overlay" *ngIf="showDeleteConfirm" (click)="showDeleteConfirm = false">
+            <div class="modal" (click)="$event.stopPropagation()">
+                <h3>Toplantıyı sil</h3>
+                <p>Bu toplantı kalıcı olarak silinecek. Emin misin?</p>
+                <div class="modal-actions">
+                    <button class="btn-ghost" (click)="showDeleteConfirm = false">İptal</button>
+                    <button class="btn-danger" (click)="delete()">Evet, Sil</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

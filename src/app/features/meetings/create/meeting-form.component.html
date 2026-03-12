@@ -1,0 +1,84 @@
+<div class="form-page">
+    <div class="form-container">
+        <div class="form-header">
+            <a routerLink="/meetings" class="back-link">← Geri</a>
+            <h1>{{ isEdit ? 'Toplantıyı Düzenle' : 'Yeni Toplantı' }}</h1>
+            <p class="subtitle">{{ isEdit ? 'Toplantı bilgilerini güncelle' : 'Yeni bir toplantı planla' }}</p>
+        </div>
+
+        <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+
+        <div class="loading" *ngIf="loadingData">
+            <div class="spinner"></div> Yükleniyor...
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!loadingData">
+            <div class="form-group">
+                <label for="title">Başlık *</label>
+                <input id="title" type="text" formControlName="title" placeholder="Haftalık Sprint Review" />
+                <span class="error-msg" *ngIf="title.touched && title.errors?.['required']">Başlık gerekli</span>
+                <span class="error-msg" *ngIf="title.touched && title.errors?.['minlength']">En az 3 karakter</span>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Açıklama</label>
+                <textarea id="description" formControlName="description" rows="3" placeholder="Toplantı hakkında kısa bir açıklama..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="startDate">Başlangıç *</label>
+                    <input id="startDate" type="datetime-local" formControlName="startDate" />
+                    <span class="error-msg" *ngIf="startDate.touched && startDate.errors?.['required']">Başlangıç zamanı gerekli</span>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">Bitiş *</label>
+                    <input id="endDate" type="datetime-local" formControlName="endDate" />
+                    <span class="error-msg" *ngIf="endDate.touched && endDate.errors?.['required']">Bitiş zamanı gerekli</span>
+                </div>
+            </div>
+
+            <!-- DOCUMENT UPLOAD -->
+            <div class="form-group">
+                <label>Doküman</label>
+
+                <div class="existing-doc" *ngIf="existingDocument && !selectedFile">
+                    <span class="doc-icon">📄</span>
+                    <div class="doc-info">
+                        <span class="doc-name">{{ existingDocument.fileName }}</span>
+                        <span class="doc-size">{{ formatFileSize(existingDocument.fileSize) }}</span>
+                    </div>
+                    <button type="button" class="doc-remove" (click)="onRemoveDocument()">✕</button>
+                </div>
+
+                <div class="selected-doc" *ngIf="selectedFile">
+                    <span class="doc-icon">📎</span>
+                    <div class="doc-info">
+                        <span class="doc-name">{{ selectedFile.name }}</span>
+                        <span class="doc-size">{{ formatFileSize(selectedFile.size) }}</span>
+                    </div>
+                    <button type="button" class="doc-remove" (click)="selectedFile = null">✕</button>
+                </div>
+
+                <label class="file-upload" *ngIf="!existingDocument && !selectedFile">
+                    <input type="file" (change)="onFileChange($event)" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg" hidden />
+                    <span class="upload-icon">⬆</span>
+                    <span>Dosya seç veya sürükle</span>
+                    <span class="upload-hint">PDF, Word, Excel, PNG, JPG</span>
+                </label>
+
+                <label class="file-change-btn" *ngIf="existingDocument && !selectedFile">
+                    <input type="file" (change)="onFileChange($event)" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg" hidden />
+                    Dosyayı Değiştir
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <a routerLink="/meetings" class="btn-ghost">İptal</a>
+                <button type="submit" class="btn-submit" [disabled]="loading">
+                    {{ loading ? 'Kaydediliyor...' : (isEdit ? 'Güncelle' : 'Oluştur') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
